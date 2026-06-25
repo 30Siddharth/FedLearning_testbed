@@ -1,0 +1,29 @@
+# config.toml
+[project]
+name = "myapp"
+version = "1.0.0"
+description = ""
+license = "Apache-2.0"
+dependencies = [
+    "flwr[simulation]>=1.32.0",
+    "numpy>=2.0.2",
+]
+
+[tool.flwr.app]
+publisher = "rac-mdf-ornl"
+# backend = "sim" # Uncomment for simulation
+# sim.clients = 3
+
+
+# Infrastructure configurations
+[tool.flwr.federations.local-simulation]
+options.address = "0.0.0.0:8080"  # Replaces legacy server.address string
+
+# Application hyperparameters 
+[tool.flwr.app.config]
+local-epochs = 1                  # Client parameters map to this central config
+lr = 1e-3
+
+[tool.flwr.app.components]
+serverapp = "myapp.server:app"
+clientapp = "myapp.client:app"
