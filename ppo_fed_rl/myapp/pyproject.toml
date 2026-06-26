@@ -1,29 +1,35 @@
-# config.toml
+# pyproject.toml  (flwr >= 1.32 app format)
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
 [project]
 name = "myapp"
 version = "1.0.0"
-description = ""
+description = "Federated PPO RL testbed with Flower"
 license = "Apache-2.0"
 dependencies = [
     "flwr[simulation]>=1.32.0",
-    "numpy>=2.0.2",
+    "numpy>=1.24.0",
+    "torch>=2.0.0",
+    "gymnasium>=0.29.0",
 ]
 
 [tool.flwr.app]
 publisher = "rac-mdf-ornl"
-# backend = "sim" # Uncomment for simulation
-# sim.clients = 3
-
-
-# Infrastructure configurations
-[tool.flwr.federations.local-simulation]
-options.address = "0.0.0.0:8080"  # Replaces legacy server.address string
-
-# Application hyperparameters 
-[tool.flwr.app.config]
-local-epochs = 1                  # Client parameters map to this central config
-lr = 1e-3
 
 [tool.flwr.app.components]
 serverapp = "myapp.server:app"
 clientapp = "myapp.client:app"
+
+[tool.flwr.app.config]
+num-server-rounds = 5
+local-epochs = 1
+lr = 1e-3
+device = "cpu"
+
+# Simulation federation — run with: flwr run . local-simulation
+[tool.flwr.federations.local-simulation]
+address = "0.0.0.0:9093"
+options.num-supernodes = 2
